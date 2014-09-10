@@ -83,8 +83,10 @@ def determine_schema(json_struct):
     used_field_names = set()
     field_names = {}
     for field_index, field_name in enumerate(sorted(fields)):
-        sane_field_name = fix_field_name(field_name, field_index,
-                                         used_field_names)
+    #    sane_field_name = fix_field_name(field_name, field_index,
+    #                                     used_field_names)
+
+        sane_field_name = field_name
         used_field_names.add(sane_field_name)
         field_names[field_name] = sane_field_name
 
@@ -116,10 +118,13 @@ def create_feature_class(catalog_path, out_schema):
         field_type, field_length = field_info(field_info_tuple)
         arcpy.AddMessage("Field {} (type {})".format(sane_field_name,
                                                      field_type))
-        arcpy.management.AddField(catalog_path, sane_field_name, field_type,
+        try:
+            arcpy.management.AddField(catalog_path, sane_field_name, field_type,
                                   field_length=field_length,
                                   field_alias=field_name,
                                   field_is_nullable="NULLABLE")
+        except:
+            pass
 
 def geojson_to_geometry(geometry_struct):
     coordinates = geometry_struct['coordinates']
