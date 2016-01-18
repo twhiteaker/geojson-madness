@@ -114,7 +114,7 @@ def create_feature_class(catalog_path, out_schema):
                                         spatial_reference=spatial_reference)
     arcpy.AddMessage("Adding fields to feature class")
     for field_name, field_info_tuple in sorted(out_schema['fields'].items()):
-        sane_field_name = out_schema['field_names'].get(field_name, field_name)
+        sane_field_name = out_schema['field_names'].get(field_name, field_name).encode("utf-8")
         field_type, field_length = field_info(field_info_tuple)
         arcpy.AddMessage("Field {} (type {})".format(sane_field_name,
                                                      field_type))
@@ -133,13 +133,13 @@ def geojson_to_geometry(geometry_struct):
     elif geometry_struct['type'] == "MultiPoint":
         return "MULTIPOINT ({})".format(
             ", ".join(
-                " ".join(str(f) for f in point))
-            for point in coordinates)
+                " ".join(str(f) for f in point)
+            for point in coordinates))
     elif geometry_struct['type'] == "LineString":
         return "LINESTRING ({})".format(
             ", ".join(
-                " ".join(str(f) for f in point))
-            for point in coordinates)
+                " ".join(str(f) for f in point)
+            for point in coordinates))
     elif geometry_struct['type'] == "MultiLineString":
         return "MULTILINESTRING ({})".format(
             ", ".join("({})".format(
